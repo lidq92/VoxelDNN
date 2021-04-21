@@ -1,12 +1,44 @@
+import os
 import numpy as np
+import random
+import logging
 from tensorflow.keras.utils import Progbar
 from voxelDNN import VoxelDNN
 from supporting_fcs import get_bin_stream_blocks
 import argparse
 import tensorflow as tf
-random_seed = 42  # 
-tf.random.set_seed(random_seed)
-np.random.seed(random_seed)
+
+
+
+def set_global_determinism(seed=42, fast_n_close=False):
+    """ https://suneeta-mall.github.io/2019/12/22/Reproducible-ml-tensorflow.html
+        Enable 100% reproducibility on operations related to tensor and randomness.
+        Parameters:
+        seed (int): seed value for global randomness
+        fast_n_close (bool): whether to achieve efficient at the cost of determinism/reproducibility
+    """
+    set_seeds(seed=seed)
+    if fast_n_close:
+        return
+
+    logging.warning("*******************************************************************************")
+    logging.warning("*** set_global_determinism is called,setting full determinism, will be slow ***")
+    logging.warning("*******************************************************************************")
+
+    os.environ['TF_DETERMINISTIC_OPS'] = '1'
+#     os.environ['TF_CUDNN_DETERMINISTIC'] = '1'
+#     # https://www.tensorflow.org/api_docs/python/tf/config/threading/set_inter_op_parallelism_threads
+#     tf.config.threading.set_inter_op_parallelism_threads(1)
+#     tf.config.threading.set_intra_op_parallelism_threads(1)
+#     from tfdeterminism import patch
+#     patch()
+
+
+def set_seeds(seed=42):
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
+    tf.random.set_seed(seed)
+    np.random.seed(seed)
 
 
 def causality_checking(model_path, dtype='float32'):
@@ -35,7 +67,7 @@ def causality_checking(model_path, dtype='float32'):
     for d in range(depth):
         for h in range(height):
             for w in range(width):
-                if i > 1:
+                if i > 9:
                     break
                 tmp_box = np.random.randint(0, 2, (1, depth, height, width, n_channel)) # np.zeros((1, depth, height, width, n_channel), dtype='float32')
                 tmp_box = tmp_box.astype(dtype=dtype)
@@ -51,7 +83,7 @@ def causality_checking(model_path, dtype='float32'):
     compare = predicted_box2 == predicted_box1
     print('Check 4: ', np.count_nonzero(compare), compare.all())
     print(probs2[0, 0, 0, 0, :])
-    print(probs1[0, 0, 0, :])
+    print(probs1[0, 0, 0, :].numpy())
     err = predicted_box2 - predicted_box1
     print(err.max(), err.min())
 
@@ -78,6 +110,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='')
     parser.add_argument("-model", '--model_path', type=str, help='path to input saved model file')
     args = parser.parse_args()
+    
+    set_global_determinism(seed=42)
     causality_checking(args.model_path)
-    causality_checking(args.model_path, 'float64')
+#     causality_checking(args.model_path, 'float64')
 

@@ -6,7 +6,7 @@ import numpy as np
 import os
 import argparse
 import time
-from voxelDNN_Inference import  occupancy_map_explore
+from voxelDNN_Inference import occupancy_map_explore, set_global_determinism
 from voxelDNN_meta_endec import save_compressed_file
 import gzip
 import pickle
@@ -217,5 +217,7 @@ if __name__ == "__main__":
     parser.add_argument("-model", '--modelpath', type=str, 
                         help='path to input model .h5 file')
     args = parser.parse_args()
+    
+    set_global_determinism(seed=42) 
     
     VoxelDNN_encoding([args.octreedepth, args.plypath, args.modelpath, args.partitioningdepth])

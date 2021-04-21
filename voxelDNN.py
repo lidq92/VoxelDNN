@@ -15,6 +15,7 @@ tf.random.set_seed(random_seed)
 np.random.seed(random_seed)
 rn.seed(random_seed)
 
+
 class MaskedConv3D(keras.layers.Layer):
 
     def __init__(self, mask_type, filters, kernel_size, strides=1, padding='same',

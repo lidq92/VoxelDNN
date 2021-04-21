@@ -1,13 +1,12 @@
 import argparse
 import numpy as np
-from voxelDNN_Inference import occupancy_map_explore
+from voxelDNN_Inference import occupancy_map_explore, set_global_determinism
 from voxelDNN_meta_endec import load_compressed_file
 import gzip
 import pickle
 import arithmetic_coding
 from voxelDNN import VoxelDNN
 import tensorflow as tf
-
 
 # encoding from breadth first sequence for parallel computing
 def voxelDNN_decoding(args):
@@ -102,5 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("-heatmap", '--output_heatmap', type=str,
                         help='name of output heatmap pkl')
     args = parser.parse_args()
+    
+    set_global_determinism(seed=42)
     
     voxelDNN_decoding([args.plypath, args.modelpath, args.outputfile, args.output_metadata, args.output_heatmap])
