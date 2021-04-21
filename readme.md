@@ -55,8 +55,8 @@ Run the following command:
 ## Encoder
 Encoding command: 
 
-    python3 voxelCNN_abac_multi_res_acc.py -level 10  -ply TestPC/Microsoft/10bits/phil10/ply/frame0010.ply -model Model/voxelDNN/ -depth 3
-Run `python3 voxelCNN_abac_multi_res_acc.py -h` for more details about the arguments. The encoder outputs look like this:
+    python3 voxelDNN_abac_multi_res_acc.py -level 10  -ply TestPC/Microsoft/10bits/phil10/ply/frame0010.ply -model Model/voxelDNN/ -depth 3
+Run `python3 voxelDNN_abac_multi_res_acc.py -h` for more details about the arguments. The encoder outputs look like this:
 
     Encoded file:  TestPC/Microsoft/10bits/phil10/ply/frame0010.ply
     Encoding time:  7440.565563201904

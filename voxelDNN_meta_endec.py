@@ -17,7 +17,7 @@ def read_from_buffer(f, n, dtype):
     return np.frombuffer(f.read(int(np.dtype(dtype).itemsize * n)), dtype=dtype)
 
 
-def save_compressed_file(binstr,resolution, octree_level):
+def save_compressed_file(binstr, resolution, octree_level):
     """Saves an octree partitioned point cloud and its partition bitstreams as an unified bitstream"""
     resolution_b = scalar_to_bytes(resolution, np.uint16)
     level_b = scalar_to_bytes(octree_level, np.uint8)
@@ -25,7 +25,7 @@ def save_compressed_file(binstr,resolution, octree_level):
     binstr_b = to_bytes(binstr, np.uint8)
     # n_flags_b = scalar_to_bytes(len(flags), np.uint16)
     # flags_b = to_bytes(flags, np.uint8)
-    ret = resolution_b+ level_b + n_binstr_b + binstr_b#+n_flags_b+flags_b
+    ret = resolution_b + level_b + n_binstr_b + binstr_b # + n_flags_b + flags_b
     return ret
 
 
@@ -37,4 +37,4 @@ def load_compressed_file(f):
     binstr = read_from_buffer(f, n_binstr, np.uint8)
     file_end = f.read()
     assert file_end == b'', f'File not read completely file_end {file_end}'
-    return binstr,resolution, level
+    return binstr, resolution, level
