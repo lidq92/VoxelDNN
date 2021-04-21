@@ -8,9 +8,9 @@
 * **Links**: [[Paper]](https://arxiv.org/abs/2011.14700)
 # Main Modification and TODO List
 
-- [x] decoder: it now can work for all  input resolution (>64) instead of =64
-- [ ] TODO: The author use input point cloud for decoding, which should be theoretically identical to the true decoding process (one by one). The project now can achieve lossless compression with input point cloud inputting to decoder. However, due to the float-point accuracy, it can not achieve lossless compression (only nearly lossless compression). Potential solution: add more context for the arithmetic coding  or a more advanced one?
-
+- [x] decoder: only decodes PCs that encoded up to block 32 -> it now can work for PCs that encoded up to block 1.
+- [ ] TODO: The author use input point cloud for decoding, which should be theoretically identical to the true decoding process (one by one). The project now can achieve lossless compression with input point cloud inputting to decoder. However, the standard procedure should be decoding one by one.
+- [ ] TODO: remove `fake_box` related code in the encoder/decoder to support all input resolution (>64) instead of =6.
 ## Prerequisites
 
 * Python 3.7
