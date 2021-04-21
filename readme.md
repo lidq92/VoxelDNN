@@ -6,9 +6,15 @@
 [Pierre Duhamel](https://scholar.google.com/citations?user=gWj_W9YAAAAJ&hl=en&oi=ao)  
 * **Affiliation**: Université Paris-Saclay, CNRS, CentraleSupélec, Laboratoire des signaux et systèmes, 91190 Gif-sur-Yvette, France
 * **Links**: [[Paper]](https://arxiv.org/abs/2011.14700)
+# Main Modification and TODO List
+
+- [x] decoder: it now can work for all  input resolution (>64) instead of =64
+- [ ] TODO: The author use input point cloud for decoding, which should be theoretically identical to the true decoding process (one by one). The project now can achieve lossless compression with input point cloud inputting to decoder. However, due to the float-point accuracy, it can not achieve lossless compression (only nearly lossless compression). Potential solution: add more context for the arithmetic coding  or a more advanced one?
+
 ## Prerequisites
-* Python 3.8
-* Tensorflow 2.3.1 with CUDA 10.1.243 and cuDNN 7.6.5
+
+* Python 3.7
+* Tensorflow 2.4.1 with CUDA 10
 
 Run command below to install all prerequired packages:
     
@@ -22,8 +28,9 @@ The training data are the .ply files containing x,y,z coordinates of points with
         python ds_select_largest.py datasets/ModelNet40 datasets/ModelNet40_200 200
         python ds_mesh_to_pc.py datasets/ModelNet40_200 datasets/ModelNet40_200_pc512 --vg_size 512
         python ds_pc_octree_blocks.py datasets/ModelNet40_200_pc512 datasets/ModelNet40_200_pc512_oct3 --vg_size 512 --level 3 
-     
-      
+
+
+​      
 You only need to run the last command for MPEG and Microsoft after selecting PCs into `train/` and `test/` folder. Note that MPEG 8i and Microsoft are 10-bits point clouds thus, you must change --vg_size to 1024 and --level to 4:
 
     python ds_pc_octree_blocks.py datasets/MPEG/10bitdepth/ datasets/MPEG/10bitdepth_2_oct4/ --vg_size 1024 --level 4
@@ -51,7 +58,7 @@ The `datsets/` folder of MPEG and Microsoft should look like this:
 Run the following command:
     
     python3 voxelDNN.py -blocksize 64 -nfilters 64 -inputmodel Model/voxelDNN/ -outputmodel Model/voxelDNN/ -dataset datasets/ModelNet40_200_pc512_oct3/ -dataset datasets/Microsoft/10bitdepth_2_oct4/ -dataset datasets/MPEG/10bitdepth_2_oct4/  -batch 8 -epochs 50
-    
+
 ## Encoder
 Encoding command: 
 
