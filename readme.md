@@ -11,7 +11,7 @@
 - [x] decoder: only decodes PCs that encoded up to block 32 -> it now can work for PCs that encoded up to block 1.
 - [x] Add one more hyperparameter `--departition_level` to upport all input block resolution instead of =64 for encoding and decoding (Actually, `pc_level` is not needed since it can be inferred from the input point cloud).  [`assert pc_level - departition_level >= bl_par_depth`]
 - [ ] TODO: The author use input point cloud for decoding, which should be theoretically identical to the true decoding process (one by one). The project now can achieve lossless compression with input point cloud inputting to decoder. However, the standard procedure should be decoding one by one.
-- [ ] TODO: from input point cloud to the decoded point cloud, a full workflow. [Hits: using `voxel_block_2octree` in `support_fcs`]
+- [ ] TODO: from input point cloud to the decoded point cloud, a full workflow. [Hits: using `voxel_block_2_octree` in `support_fcs`]
 - [ ] TODO1: improve computational efficiency, e.g., parallel mechanism for block level & how to improve the computational efficiency inside a block & block size trade off & model improvement, etc.
 - [ ] TODO2: imporve VoxelDNN network and use advanced encoder/decoder to improve the performance, e.g., bpov, etc.
 ## Prerequisites
