@@ -9,12 +9,15 @@
 # Main Modification and TODO List
 
 - [x] decoder: only decodes PCs that encoded up to block 32 -> it now can work for PCs that encoded up to block 1.
+- [x] Support all input block resolution instead of =64 for encoding and decoding.
 - [ ] TODO: The author use input point cloud for decoding, which should be theoretically identical to the true decoding process (one by one). The project now can achieve lossless compression with input point cloud inputting to decoder. However, the standard procedure should be decoding one by one.
-- [ ] TODO: remove `fake_box` related code in the encoder/decoder to support all input resolution (>64) instead of =6.
+- [ ] TODO: from input point cloud to the decoded point cloud, a full workflow.
+- [ ] TODO1: improve computational efficiency, e.g., parallel mechanism for block level & how to improve the computational efficiency inside a block & block size trade off & model improvement, etc.
+- [ ] TODO2: imporve VoxelDNN network and use advanced encoder/decoder to improve the performance, e.g., bpov, etc.
 ## Prerequisites
 
 * Python 3.7
-* Tensorflow 2.4.1 with CUDA 10
+* Tensorflow 2.4.1 with CUDA 10.1
 
 Run command below to install all prerequired packages:
     

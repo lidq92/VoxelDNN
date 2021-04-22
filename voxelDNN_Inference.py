@@ -102,7 +102,8 @@ def pc_2_block_oc3(blocks, bbox_max=512):
 def occupancy_map_explore(ply_path, pc_level, departition_level):
     no_oc_voxels, blocks, binstr = get_bin_stream_blocks(ply_path, pc_level, departition_level)
     print('Finished loading model and ply to oc')
-    boxes = pc_2_block_oc3(blocks, bbox_max=64)
+#     boxes = pc_2_block_oc3(blocks, bbox_max=64)
+    boxes = pc_2_block_oc3(blocks, bbox_max=2 ** (pc_level - departition_level))
     print('Boxes shape:', boxes.shape)
     return boxes, binstr, no_oc_voxels
 

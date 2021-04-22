@@ -21,22 +21,22 @@ def timing(f):
 
 
 
-def voxel_block_2_octree(box,oct_seq):
-    box_size=box.shape[0]
-    child_bbox=int(box_size/2)
-    if(box_size>2):
+def voxel_block_2_octree(box, oct_seq):
+    box_size = box.shape[0]
+    child_bbox = int(box_size / 2)
+    if(box_size > 2):
         for d in range(2):
             for h in range(2):
                 for w in range(2):
-                    child_box=box[d * child_bbox:(d + 1) * child_bbox, h * child_bbox:(h + 1) * child_bbox, w * child_bbox:(w + 1) * child_bbox]
+                    child_box = box[d * child_bbox:(d + 1) * child_bbox, h * child_bbox:(h + 1) * child_bbox, w * child_bbox:(w + 1) * child_bbox]
                     if(np.sum(child_box)!=0):
                         oct_seq.append(1)
-                        voxel_block_2_octree(child_box,oct_seq)
+                        voxel_block_2_octree(child_box, oct_seq)
                     else:
                         oct_seq.append(0)
     else:
-        curr_octant=[int(x) for x in box.flatten()]
-        oct_seq+=curr_octant
+        curr_octant = [int(x) for x in box.flatten()]
+        oct_seq += curr_octant
     return oct_seq
 
 

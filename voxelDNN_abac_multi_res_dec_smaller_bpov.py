@@ -22,19 +22,20 @@ def voxelDNN_decoding(args):
     with open(flags_pkl,'rb') as f:
         flags = pickle.load(f) # flags are contained in a pkl file, collecting information purpose
 
+    bbox_max = 2 ** (pc_level - departition_level)
+    voxelDNN = VoxelDNN(bbox_max, bbox_max, bbox_max)
+    voxel_DNN = voxelDNN.restore_voxelDNN(model_path)
     with open(outputfile, "rb") as inp:
         bitin = arithmetic_coding.BitInputStream(inp)
         dec = arithmetic_coding.ArithmeticDecoder(32, bitin)
         decoded_boxes = np.zeros_like(boxes)
-        voxelDNN = VoxelDNN()
-        voxel_DNN = voxelDNN.restore_voxelDNN(model_path)
         for i in range(len(boxes)):
 #         for i in range(1):
-            decoded_boxes[i] = decompress_from_adaptive_freqs(decoded_boxes[i], np.asarray(boxes[i]), flags[i][1], dec, voxel_DNN)
+            decoded_boxes[i] = decompress_from_adaptive_freqs(decoded_boxes[i], np.asarray(boxes[i]), flags[i][1], dec, voxel_DNN, bbox_max)
     decoded_boxes = decoded_boxes.astype(int)
-    
     end = time.time()
     print('Encoding time: ', end - start)
+    
     boxes = boxes.astype(int)
     compare = decoded_boxes == boxes
     print('Check 1: decoded pc level: ',pc_level)
@@ -46,8 +47,8 @@ def voxelDNN_decoding(args):
 #     print(decoded_boxes.max(), decoded_boxes.min())
 
 
-def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, start=[0,0,0]):
-    bbox_max = box.shape[0]
+def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, bbox_max, start=[0,0,0]):
+    box_size = box.shape[0]
     print('Number of non empty voxels: ', np.sum(box))
     fl_idx = 0
 #     print('Flags: ', flags[0:9])
@@ -55,17 +56,15 @@ def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, star
         print('Decoding as a single box')
         # causality is preserved, using original box to decode is ok
         # (lossless compression + mask filters -> OK)
-        # about fake_box: encode and decode should be consistent.
-        # This can be simplified (TODO: rm fake_box in encode and decode)
-        fake_box = np.zeros((1, 64, 64, 64, 1))
-        fake_box[:, 0:bbox_max, 0:bbox_max, 0:bbox_max, :] = box
+        fake_box = np.zeros((1, bbox_max, bbox_max, bbox_max, 1))
+        fake_box[:, 0:box_size, 0:box_size, 0:box_size, :] = box
         probs = tf.nn.softmax(voxel_DNN(fake_box)[0, :, :, :, :], axis=-1)
-        probs = probs[0:bbox_max, 0:bbox_max, 0:bbox_max, :]
-        print(probs.shape)
+        probs = probs[0:box_size, 0:box_size, 0:box_size, :]
         probs = np.asarray(probs, dtype='float32')
-        for d in range(bbox_max):
-            for h in range(bbox_max):
-                for w in range(bbox_max):
+        print(probs.shape)
+        for d in range(box_size):
+            for h in range(box_size):
+                for w in range(box_size):
                     fre = [probs[d, h, w, 0], probs[d, h, w, 1], 0.]
                     fre = np.asarray(fre)
                     fre = (2 ** 10 * fre)
@@ -74,7 +73,7 @@ def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, star
                     freq = arithmetic_coding.NeuralFrequencyTable(fre)
                     symbol = dec.read(freq)
                     decoded_box[start[0] + d, start[1] + h, start[2] + w, 0] = symbol
-        symbol = dec.read(freq) 
+#         symbol = dec.read(freq) 
         del flags[fl_idx]
     elif flags[fl_idx] == 0:
         del flags[fl_idx]
@@ -88,7 +87,7 @@ def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, star
                                     h * child_bbox_max:(h + 1) * child_bbox_max,
                                     w * child_bbox_max:(w + 1) * child_bbox_max, :]
                     new_start = [start[0] + d * child_bbox_max, start[1] + h * child_bbox_max, start[2] + w * child_bbox_max]
-                    decoded_box = decompress_from_adaptive_freqs(decoded_box, child_box, flags, dec, voxel_DNN, new_start)
+                    decoded_box = decompress_from_adaptive_freqs(decoded_box, child_box, flags, dec, voxel_DNN, bbox_max, new_start)
                                                             
     return decoded_box
 
