@@ -79,7 +79,7 @@ def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, bbox
         del flags[fl_idx]
     else:
         del flags[fl_idx]
-        child_bbox_max = int(bbox_max / 2)
+        child_bbox_max = int(box_size / 2)
         for d in range(2):
             for h in range(2):
                 for w in range(2):
