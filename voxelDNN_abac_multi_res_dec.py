@@ -29,7 +29,6 @@ def voxelDNN_decoding(args):
         voxelDNN = VoxelDNN()
         voxel_DNN = voxelDNN.restore_voxelDNN(model_path)
         for i in range(len(boxes)):
-#         for i in range(1):
             decoded_boxes[i] = decompress_from_adaptive_freqs(decoded_boxes[i], np.asarray(boxes[i]), flags[i][1], dec, voxel_DNN)
     decoded_boxes = decoded_boxes.astype(int)
     

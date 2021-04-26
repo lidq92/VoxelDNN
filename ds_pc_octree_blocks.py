@@ -1,11 +1,4 @@
 import logging
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
-    datefmt="%Y-%m-%d %H:%M:%S")
-logger = logging.getLogger(__name__)
-
 import os
 from os.path import join, split, splitext
 from os import makedirs
@@ -17,6 +10,13 @@ import functools
 from tqdm import tqdm
 from multiprocessing import Pool
 from octree_partition import partition_octree
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
+    datefmt="%Y-%m-%d %H:%M:%S")
+logger = logging.getLogger(__name__)
 
 
 def arr_to_pc(arr, cols, types):

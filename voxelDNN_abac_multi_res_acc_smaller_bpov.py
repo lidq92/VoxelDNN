@@ -14,12 +14,11 @@ from voxelDNN import VoxelDNN
 import tensorflow as tf
 
 
-# encode using 1, 2, 3 level
 # statistic for individual block
 # encoding from breadth first sequence for parallel computing
 def VoxelDNN_encoding(args):
     pc_level, departition_level, ply_path, model_path, bl_par_depth = args
-    assert pc_level - departition_level >= bl_par_depth
+    assert pc_level - departition_level >= max(bl_par_depth, 1)
     sequence_name = os.path.split(ply_path)[1]
     sequence = os.path.splitext(sequence_name)[0]
     output_path = os.path.join(model_path, str(sequence))

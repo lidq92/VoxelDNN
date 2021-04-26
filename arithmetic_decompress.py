@@ -9,13 +9,12 @@
 # https://www.nayuki.io/page/reference-arithmetic-coding
 # https://github.com/nayuki/Reference-arithmetic-coding
 #
-
 import sys
 import arithmetic_coding
 import numpy as np
 import os
 
-# Command line main application function.
+
 def main(args):
     # Handle command line arguments
     if len(args) != 2:
@@ -50,6 +49,5 @@ def decompress(freqs, bitin, out):
         out.write(bytes((symbol,)))
 
 
-# Main launcher
 if __name__ == "__main__":
     main(sys.argv[1:])

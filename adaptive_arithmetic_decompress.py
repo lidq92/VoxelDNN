@@ -1,4 +1,3 @@
-
 #
 # Decompression application using adaptive arithmetic coding
 #
@@ -10,7 +9,6 @@
 # https://www.nayuki.io/page/reference-arithmetic-coding
 # https://github.com/nayuki/Reference-arithmetic-coding
 #
-
 import sys
 import arithmetic_coding
 
@@ -41,6 +39,5 @@ def decompress(bitin, out):
         freqs.increment(symbol)
 
 
-# Main launcher
 if __name__ == "__main__":
     main(sys.argv[1:])

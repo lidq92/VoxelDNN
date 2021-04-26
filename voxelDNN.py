@@ -137,7 +137,6 @@ class VoxelDNN():
         #voxelDNN.summary()
         return voxelDNN
 
-
     def calling_dataset(self,training_dirs, batch_size, portion_data):
         files=[]
         for training_dir in training_dirs:
@@ -254,8 +253,6 @@ class VoxelDNN():
             if best_val_epoch < epoch - max_patience:
                 print('Early stopping')
                 break
-
-
 
     def restore_voxelDNN(self,model_path):
         voxelDNN = self.build_voxelDNN_model()

@@ -19,7 +19,7 @@ import tensorflow as tf
 # encoding from breadth first sequence for parallel computing
 def VoxelDNN_encoding(args):
     pc_level, ply_path, model_path ,bl_par_depth= args
-    departition_level = pc_level - 6  # pc_level - 6 > 0? otherwise binstr will be None
+    departition_level = pc_level - 6  
     sequence_name = os.path.split(ply_path)[1]
     sequence = os.path.splitext(sequence_name)[0]
     output_path = os.path.join(model_path, str(sequence))

@@ -1,16 +1,5 @@
 #!/usr/bin/env python
-
-################################################################################
-### Init
-################################################################################
 import logging
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
-    datefmt="%Y-%m-%d %H:%M:%S")
-logger = logging.getLogger(__name__)
-
 import os
 from os.path import join, split, splitext
 from os import makedirs
@@ -22,9 +11,14 @@ from multiprocessing import Pool
 import argparse
 import functools
 
-################################################################################
-### Definitions
-################################################################################
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
+    datefmt="%Y-%m-%d %H:%M:%S")
+logger = logging.getLogger(__name__)
+
+
 def process(path, args):
     ori_path = join(args.source, path)
     target_path, _ = splitext(join(args.dest, path))
@@ -34,6 +28,7 @@ def process(path, args):
 
     logger.debug(f"Writing PC {ori_path} to {target_path}")
     pc_mesh = PyntCloud.from_file(ori_path)
+    # first backup the mesh and re-set it later as the points setter removes the mesh.
     mesh = pc_mesh.mesh
     pc_mesh.points = pc_mesh.points.astype('float64', copy=False)
     pc_mesh.mesh = mesh
@@ -53,9 +48,7 @@ def process(path, args):
 
     pc.to_file(target_path)
     
-################################################################################
-### Script
-################################################################################
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='ds_mesh_to_pc.py',

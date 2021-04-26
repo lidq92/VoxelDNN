@@ -20,7 +20,6 @@ def timing(f):
     return wrap
 
 
-
 def voxel_block_2_octree(box, oct_seq):
     box_size = box.shape[0]
     child_bbox = int(box_size / 2)
@@ -150,5 +149,3 @@ def load_points(files, batch_size=32):
         points = np.array(list(tqdm(p.imap(load_pc, files, batch_size), total=files_len)))
 
     return points
-
-

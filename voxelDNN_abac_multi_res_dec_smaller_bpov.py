@@ -8,6 +8,9 @@ import arithmetic_coding
 from voxelDNN import VoxelDNN
 import tensorflow as tf
 import time
+from Octree import combineBoxes2Points
+from pyntcloud import PyntCloud
+import pandas as pd
 
 # encoding from breadth first sequence for parallel computing
 def voxelDNN_decoding(args):
@@ -30,7 +33,6 @@ def voxelDNN_decoding(args):
         dec = arithmetic_coding.ArithmeticDecoder(32, bitin)
         decoded_boxes = np.zeros_like(boxes)
         for i in range(len(boxes)):
-#         for i in range(1):
             decoded_boxes[i] = decompress_from_adaptive_freqs(decoded_boxes[i], np.asarray(boxes[i]), flags[i][1], dec, voxel_DNN, bbox_max)
     decoded_boxes = decoded_boxes.astype(int)
     end = time.time()
@@ -45,6 +47,16 @@ def voxelDNN_decoding(args):
 #     err = decoded_boxes - boxes
 #     print(err.max(), err.min())
 #     print(decoded_boxes.max(), decoded_boxes.min())
+    pc = PyntCloud.from_file(ply_path)
+    ptdecode = combineBoxes2Points(pc_level, departition_level, binstr, decoded_boxes)
+    ptdecode = pd.DataFrame(data=ptdecode, columns=['x', 'y', 'z']).sort_values(by=['x','y','z'])
+    pt = pc.points.astype(int).sort_values(by=['x','y','z'])
+#     print(pt)
+#     print(ptdecode)
+    pt.index = range(len(pt))
+    ptdecode.index = range(len(ptdecode))
+    compare2 = pt.equals(ptdecode)
+    print('Check 5: decoded points', len(pt), len(ptdecode), compare2)
 
 
 def decompress_from_adaptive_freqs(decoded_box, box, flags, dec, voxel_DNN, bbox_max, start=[0,0,0]):
