@@ -36,7 +36,7 @@ def process(path, args):
     pc = pc_mesh.get_sample("mesh_random", n=args.n_samples, as_PyntCloud=True)
     coords = ['x', 'y', 'z']
     points = pc.points.values
-    points = points - np.min(points)
+    points = points - np.min(points, axis=0, keepdims=True)
     points = points / np.max(points)
     points = points * (args.vg_size - 1)
     points = np.round(points)
